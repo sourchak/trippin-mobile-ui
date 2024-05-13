@@ -1,0 +1,3 @@
+type RegistrationFormProps = {
+  navigateToSignIn: () => void;
+};
