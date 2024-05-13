@@ -1,11 +1,16 @@
 # Trippin' Expense Tracker
 
-## Steps to Run
+## Steps to Start the server
 
 - Clone the project
 - Run `npm install`
-  - In case of issues try running `npm audit fix` and force it if needed with `npm audit fix --force` be running to [stack overflow](https://stackoverflow.com/)
+  - In case of issues try running `npm audit fix`, and force it if needed with `npm audit fix --force` before running to [stack overflow](https://stackoverflow.com/)
 - Run `npm start`
+
+## To view the mobile app
+
+- Download **Expo Go** from your respective app store.
+- Scan the QR generated in the above process using Expo Go, or manually enter the link.
 
 ## Note to self
 

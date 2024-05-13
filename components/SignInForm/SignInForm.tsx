@@ -47,6 +47,8 @@ export default function SignInForm({
       marginBottom: 47,
     },
     forgotPasswordButton: {
+      fontWeight: "600",
+      fontFamily: "Poppins_600SemiBold",
       fontSize: 18,
       marginTop: 23,
       opacity: 0.73,
