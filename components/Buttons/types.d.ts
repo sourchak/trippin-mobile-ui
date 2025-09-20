@@ -1,4 +1,5 @@
 type BottomButtonProps = {
   label?: string;
-  action?: () => void | undefined | null;
+  action?: () => Promise<null>;
+  disabled?: boolean;
 };

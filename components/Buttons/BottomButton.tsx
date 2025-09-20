@@ -1,6 +1,10 @@
 import { Pressable, Text, Vibration } from "react-native";
 
-export default function BottomButton({ label, action }: BottomButtonProps) {
+export default function BottomButton({
+  disabled = false,
+  label,
+  action,
+}: BottomButtonProps) {
   return (
     <Pressable
       style={{
@@ -18,6 +22,7 @@ export default function BottomButton({ label, action }: BottomButtonProps) {
         Vibration.vibrate(50);
         action?.();
       }}
+      disabled={disabled}
     >
       <Text
         style={{

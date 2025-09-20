@@ -1,25 +1,87 @@
 import { useState } from "react";
-import { Text, View, TextInput, StyleSheet } from "react-native";
+import {
+  Text,
+  View,
+  TextInput,
+  StyleSheet,
+  Dimensions,
+  Platform,
+} from "react-native";
 import BottomButton from "../Buttons/BottomButton";
 import Footer from "../Footer/Footer";
 import ActionLink from "../ActionLink/ActionLink";
 import SignInPageLyadkhor from "../../assets/SignInPageLyadkhor.svg";
+import { BASE_URL } from "../../constants";
 
 export default function SignInForm({
+  navigation,
   navigateToRegistrationForm,
+  navigateToDashboard,
 }: Readonly<SignInFormProps>) {
-  const [name, setName] = useState<string | undefined>();
+  const { height, width } = Dimensions.get("screen");
+  const [mobileNumber, setMobileNumber] = useState<string | undefined>();
   const [password, setPassword] = useState<string | undefined>();
-  const callLogin = () => {
-    console.log("Navigate to Login");
+  const callLogin = async () => {
+    try {
+      console.log({
+        mobileNumber,
+        password,
+      })
+      const response = await fetch(
+        `${BASE_URL}/auth/login`,
+        {
+          method: "POST",
+          body: JSON.stringify({
+            mobileNumber,
+            password,
+          }),
+        }
+      );
+      const status = response.status;
+      console.log(status);
+      console.log(JSON.stringify(response));
+      if (status === 200) {
+        console.log("Login success");
+        const { data: responseBody } = await response.json();
+        console.log(responseBody.name);
+        navigation.navigate("Dashboard", {
+          id: responseBody._id,
+          name: responseBody.name,
+        });
+      } else {
+        throw Error("Not found");
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      console.log("finally");
+    }
+    return null;
   };
   const footerContent = (
     <Text>
       Don't have an account?{" "}
-      <ActionLink linkText="Sign up" linkAction={navigateToRegistrationForm} />
+      <ActionLink
+        linkText="Sign up"
+        linkAction={() => navigation.navigate("RegistrationForm")}
+      />
     </Text>
   );
   const styles = StyleSheet.create({
+    appContainer: {
+      flex: 1,
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: "#EEEEEE",
+      overflow: "visible",
+    },
+    backgroundCircleRenderer: {
+      backgroundColor: "#AE8FE1",
+      opacity: 0.7,
+      height: width / 2,
+      width: width / 2,
+      borderRadius: width / 2,
+    },
     inputBox: {
       width: 326,
       height: 50,
@@ -55,35 +117,56 @@ export default function SignInForm({
     },
   });
   return (
-    <View style={styles.container}>
-      <Text style={styles.signInHeader}>Welcome Back!</Text>
-      <SignInPageLyadkhor
-        height={172}
-        width={172}
-        style={styles.signInPageLyadkhor}
+    <View style={{ ...styles.appContainer, height: height }}>
+      <View
+        style={{
+          ...styles.backgroundCircleRenderer,
+          marginTop: (-1 * width) / 4,
+          marginLeft: (-1 * width) / 2,
+          zIndex: 2,
+          elevation: Platform.OS === "android" ? 2 : 0,
+        }}
       />
-      <TextInput
-        onChangeText={setName}
-        value={name}
-        placeholder="Enter your name"
-        style={styles.inputBox}
-      />
-      <TextInput
-        onChangeText={setPassword}
-        value={password}
-        placeholder="Enter Password"
-        style={styles.inputBox}
-        autoComplete="password"
-        secureTextEntry={true}
-      />
-      <ActionLink
-        style={styles.forgotPasswordButton}
-        linkText="Forgot Password?"
-        linkAction={() => {}}
+      <View
+        style={{
+          ...styles.backgroundCircleRenderer,
+          marginTop: (-1 * width) / 3,
+          marginLeft: -1 * width,
+          zIndex: 4,
+          elevation: Platform.OS === "android" ? 4 : 0,
+        }}
       />
       <View style={styles.container}>
-        <BottomButton label="Login" action={callLogin} />
-        <Footer content={footerContent} />
+        <Text style={styles.signInHeader}>Welcome Back!</Text>
+        <SignInPageLyadkhor
+          height={172}
+          width={172}
+          style={styles.signInPageLyadkhor}
+        />
+        <TextInput
+          onChangeText={setMobileNumber}
+          value={mobileNumber}
+          placeholder="Enter mobile number"
+          style={styles.inputBox}
+          inputMode="tel"
+        />
+        <TextInput
+          onChangeText={setPassword}
+          value={password}
+          placeholder="Enter Password"
+          style={styles.inputBox}
+          autoComplete="password"
+          secureTextEntry={true}
+        />
+        <ActionLink
+          style={styles.forgotPasswordButton}
+          linkText="Forgot Password?"
+          linkAction={() => {}}
+        />
+        <View style={styles.container}>
+          <BottomButton label="Login" action={callLogin} />
+          <Footer content={footerContent} />
+        </View>
       </View>
     </View>
   );
