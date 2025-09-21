@@ -2,7 +2,7 @@ import { Dimensions, Pressable, StyleSheet, Text, View } from "react-native";
 import TripDateIcon from "../../assets/TripDateIcon.svg";
 import LocationIcon from "../../assets/LocationIcon.svg";
 import { TripProps } from "./types";
-import { AUTOMATIC_FONT_OPTIMIZATION_MANIFEST } from "next/dist/shared/lib/constants";
+import moment from "moment";
 
 export default function Trip({
   trip,
@@ -39,11 +39,11 @@ export default function Trip({
   return (
     <Pressable
       style={{ ...styles.container }}
-      onPress={() => navigateToTripDetails(trip._id)}
+      onPress={() => navigateToTripDetails(trip.id)}
     >
       <View style={{ ...styles.tripDetailLine, ...styles.tripTopLine }}>
         <TripDateIcon height={11.67} width={11.67} />
-        <Text>{trip.createdAt.toString()}</Text>
+        <Text>{moment(trip.date).format("Do MMM YYYY")}</Text>
       </View>
       <View style={{ ...styles.tripDetailLine, ...styles.tripBottomLine }}>
         <LocationIcon

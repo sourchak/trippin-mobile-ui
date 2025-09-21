@@ -4,6 +4,7 @@ import TopBanner from "../Dashboard/TopBanner";
 import { useEffect, useState } from "react";
 import { handleGetTransactions } from "../../app/api/transaction/handler";
 import { requestFetchUsers } from "../../requests/user";
+import { BASE_URL } from "../../constants";
 
 export default function TripDetails({
   navigation,
@@ -12,7 +13,7 @@ export default function TripDetails({
   const { height, width } = Dimensions.get("screen");
   const { tripId, name } = route.params;
   console.log({ tripId });
-  
+
   const styles = StyleSheet.create({
     appContainer: {
       flex: 1,
@@ -52,28 +53,29 @@ export default function TripDetails({
   //     });
   // }, []);
 
-  if (tripId === undefined || tripId === null) {  return <Text>Trip ID is invalid</Text>; }
+  if (tripId === undefined || tripId === null) {
+    return <Text>Trip ID is invalid</Text>;
+  }
 
   useEffect(() => {
-    requestFetchUsers()
-      .then((response) => 
-        console.log({"response": JSON.stringify(response)})
-    ).catch((error) => {
-        console.error("Error fetching users:", error);
-    });
+    // requestFetchUsers()
+    //   .then((response) =>
+    //     console.log({"response": JSON.stringify(response)})
+    // ).catch((error) => {
+    //     console.error("Error fetching users:", error);
+    // });
     getTripDTransactions();
   }, [tripId]);
   const getTripDTransactions = async () => {
     try {
-      const response = await fetch(
-        `https://tripping-api.vercel.app/api/transaction?filterBy=trip&keyword=\{"$eq":"${tripId}"\}`);
-      const status = await response.status;
+      const response = await fetch(`${BASE_URL}/trip/${tripId}`);
+      console.log({ response });
+      const status = response.status;
       if (status === 200) {
-        const { data: responseBody } = await response.json();
-        console.log(JSON.stringify(responseBody));
-        return responseBody;
-      }
-      else {
+        const data = await response.json();
+        console.log(JSON.stringify({ data }));
+        return data;
+      } else {
         throw Error("Not found");
       }
     } catch (error) {

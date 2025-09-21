@@ -23,29 +23,24 @@ export default function SignInForm({
   const [password, setPassword] = useState<string | undefined>();
   const callLogin = async () => {
     try {
-      console.log({
-        mobileNumber,
-        password,
-      })
-      const response = await fetch(
-        `${BASE_URL}/auth/login`,
-        {
-          method: "POST",
-          body: JSON.stringify({
-            mobileNumber,
-            password,
-          }),
-        }
-      );
+      const response = await fetch(`${BASE_URL}/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          mobileNumber,
+          password,
+        }),
+      });
+
       const status = response.status;
-      console.log(status);
-      console.log(JSON.stringify(response));
+
       if (status === 200) {
-        console.log("Login success");
         const { data: responseBody } = await response.json();
-        console.log(responseBody.name);
+
         navigation.navigate("Dashboard", {
-          id: responseBody._id,
+          id: responseBody.id,
           name: responseBody.name,
         });
       } else {

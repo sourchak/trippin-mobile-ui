@@ -1,5 +1,5 @@
-import { TripDocument } from "../../types/documents/collections/trip";
 import { NavigationScreenProp } from "react-navigation";
+import { TripDocument } from "../../types/trip";
 
 type DashboardProps = {
   navigation: NavigationScreenProp<any, any>;

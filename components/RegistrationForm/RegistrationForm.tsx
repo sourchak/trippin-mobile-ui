@@ -13,6 +13,7 @@ import {
 import BottomButton from "../Buttons/BottomButton";
 import Footer from "../Footer/Footer";
 import ActionLink from "../ActionLink/ActionLink";
+import { BASE_URL } from "../../constants";
 
 export default function RegistrationForm({
   navigation,
@@ -21,7 +22,7 @@ export default function RegistrationForm({
   const { height, width } = Dimensions.get("screen");
   const isAndroid = Platform.OS === "android";
   const [name, setName] = useState<string | undefined>();
-  const [mobileNo, setMobileNo] = useState<string | undefined>();
+  const [mobileNumber, setMobileNumber] = useState<string | undefined>();
   const [password, setPassword] = useState<string | undefined>();
   const [confirmPassword, setConfirmPassword] = useState<string | undefined>();
   const [isPasswordMatching, setIsPasswordMatching] = useState<boolean>(true);
@@ -29,28 +30,29 @@ export default function RegistrationForm({
     console.log(name);
   }, [name]);
   const registerUser = async () => {
-    console.log({ name, mobileNo, password, confirmPassword });
+    console.log({ name, mobileNo: mobileNumber, password, confirmPassword });
     setIsPasswordMatching(password === confirmPassword);
     if (isPasswordMatching) {
       try {
-        const response = await fetch(
-          "https://tripping-api.vercel.app/api/auth/register",
-          {
-            method: "POST",
-            body: JSON.stringify({
-              name,
-              mobileNo,
-              password,
-            }),
-          }
-        );
-        const status = await response.status;
-        if (status === 200) {
+        const response = await fetch(`${BASE_URL}/auth/register`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name,
+            mobileNumber,
+            password,
+          }),
+        });
+        console.log(response);
+        const status = response.status;
+        if (status === 201) {
           console.log(`${name} successfully registered`);
           const { data: responseBody } = await response.json();
           console.log(responseBody.name);
           navigation.navigate("Dashboard", {
-            id: responseBody._id,
+            id: responseBody.id,
             name: responseBody.name,
           });
         } else {
@@ -152,8 +154,8 @@ export default function RegistrationForm({
           </ScrollView>
           <ScrollView keyboardShouldPersistTaps="never">
             <TextInput
-              onChangeText={setMobileNo}
-              value={mobileNo}
+              onChangeText={setMobileNumber}
+              value={mobileNumber}
               placeholder="Enter your phone No."
               keyboardType="phone-pad"
               inputMode="tel"
@@ -191,7 +193,7 @@ export default function RegistrationForm({
           <BottomButton
             label="Register"
             action={registerUser}
-            disabled={!(mobileNo && name && isPasswordMatching)}
+            disabled={!(mobileNumber && name && isPasswordMatching)}
           />
           <Footer content={footerContent} />
         </View>

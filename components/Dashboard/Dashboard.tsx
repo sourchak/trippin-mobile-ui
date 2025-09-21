@@ -9,9 +9,8 @@ export default function Dashboard({
 }: Readonly<DashboardProps>) {
   const { height, width } = Dimensions.get("screen");
   const { id, name } = route.params;
-  console.log({ id, name });
+
   const navigateToTripDetails = (tripId: any) => {
-    console.log({ tripId });
     navigation.navigate("TripDetails", {
       tripId,
       name,
